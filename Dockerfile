@@ -11,7 +11,7 @@ ARG MOLD_SHA256_X86_64=4c999e19ffa31afa5aa429c679b665d5e2ca5a6b6832ad4b79668e8dc
 
 RUN apt-get update && \
     apt-get install -y --no-install-recommends \
-      git libclang-dev pkg-config curl build-essential cmake && \
+      git libclang-dev pkg-config curl build-essential cmake protobuf-compiler && \
     rm -rf /var/lib/apt/lists/*
 
 RUN set -eux; \
@@ -34,7 +34,7 @@ WORKDIR /app
 COPY versions.env /tmp/versions.env
 
 RUN . /tmp/versions.env && git clone $BASE_RETH_NODE_REPO . && \
-    git checkout tags/$BASE_RETH_NODE_TAG && \
+    git checkout $BASE_RETH_NODE_TAG && \
     bash -c '[ "$(git rev-parse HEAD)" = "$BASE_RETH_NODE_COMMIT" ]' || (echo "Commit hash verification failed" && exit 1)
 
 RUN cargo build --bin base-reth-node --bin base-consensus --bin basectl --profile maxperf
